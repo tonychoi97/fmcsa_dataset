@@ -20,8 +20,21 @@ def carrier_api_call_option():
             return
         else:
             break
-
+    
+    count = 0
     search_dot_list = get_dot_list_from_csv()
+    df1 = pd.DataFrame(search_dot_list, columns = ['DOT NUMBER'])
+    df2 = pd.read_csv("active fmcsa records.csv", usecols = ['DOT NUMBER'], header = 0)
+    for i in list(df1['DOT NUMBER'].astype(str)):
+        duplicate_checker = list(df2['DOT NUMBER'].astype(str)).count(i)
+        if duplicate_checker > 0:
+            print(f'{i} already exists in the records database.')
+            count += 1
+            search_dot_list.remove(i)
+        else:
+            continue
+    
+    print(f'Found {count} duplicates. Proceeding with API call...\n')
 
     with open('active fmcsa records.csv', 'a', newline = '', encoding = 'utf-8') as f:
         for i in search_dot_list:
@@ -154,7 +167,7 @@ def carrier_api_call_option():
                 print('Trying again after 3 seconds...\n')
                 time.sleep(3)
                 continue
-            
+
     print("Finished call. Program is now shutting down...")
     sys.exit()
 
@@ -173,7 +186,7 @@ def api_call_key_test(base, web):
 
 def get_dot_list_from_csv():
     dot = []
-    with open('dot numbers.csv', 'r') as f:
+    with open('anaheim radius.csv', 'r') as f:
         csv_reader = csv.reader(f, delimiter = ',')
         next(csv_reader)
         dot = [row[0] for row in csv_reader]
