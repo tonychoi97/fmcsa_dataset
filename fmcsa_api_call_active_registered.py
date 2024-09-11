@@ -135,17 +135,34 @@ def carrier_api_call_option():
 
                 else:
                     print("DOT Number:", i, "is", data['content']['carrier']['dbaName'], '\n')
-                    new_record= {
+                    
+                    if data['content']['carrier']['carrierOperation'] == None:
+                        carrier_operation_code = None
+                        carrier_operation_description = None
+                    else:
+                        carrier_operation_code = data['content']['carrier']['carrierOperation']['carrierOperationCode']
+                        carrier_operation_description = data['content']['carrier']['carrierOperation']['carrierOperationDesc']
+
+                    if data['content']['carrier']['censusTypeId'] == None:
+                        census_type = None
+                        census_type_description = None
+                        census_type_id = None
+                    else:
+                        census_type = data['content']['carrier']['censusTypeId']['censusType']
+                        census_type_description = data['content']['carrier']['censusTypeId']['censusTypeDesc']
+                        census_type_id = data['content']['carrier']['censusTypeId']['censusTypeId']
+
+                    new_record = {
                         "RECORD RETRIEVAL DATE": date.today(),
                         "DOT NUMBER": data['content']['carrier']['dotNumber'],
                         "DBA NAME": data['content']['carrier']['dbaName'],
                         "LEGAL NAME": data['content']['carrier']['legalName'],
                         "ALLOWED TO OPERATE": data['content']['carrier']['allowedToOperate'],
-                        "CARRIER OPERATION CODE": data['content']['carrier']['carrierOperation']['carrierOperationCode'],
-                        "CARRIER OPERATION DESCRIPTION": data['content']['carrier']['carrierOperation']['carrierOperationDesc'],
-                        "CENSUS TYPE": data['content']['carrier']['censusTypeId']['censusType'],
-                        "CENSUS TYPE DESCRIPTION": data['content']['carrier']['censusTypeId']['censusTypeDesc'],
-                        "CENSUS TYPE ID": data['content']['carrier']['censusTypeId']['censusTypeId'],
+                        "CARRIER OPERATION CODE": carrier_operation_code,
+                        "CARRIER OPERATION DESCRIPTION": carrier_operation_description,
+                        "CENSUS TYPE": census_type,
+                        "CENSUS TYPE DESCRIPTION": census_type_description,
+                        "CENSUS TYPE ID": census_type_id,
                         "IS PASSENGER CARRIER?": data['content']['carrier']['isPassengerCarrier'],
                         "MCS150 OUTDATED?": data['content']['carrier']['mcs150Outdated'],
                         "OOS DATE": data['content']['carrier']['oosDate'],
@@ -186,7 +203,7 @@ def api_call_key_test(base, web):
 
 def get_dot_list_from_csv():
     dot = []
-    with open('anaheim radius.csv', 'r') as f:
+    with open('act expo 2025 target states.csv', 'r') as f:
         csv_reader = csv.reader(f, delimiter = ',')
         next(csv_reader)
         dot = [row[0] for row in csv_reader]
