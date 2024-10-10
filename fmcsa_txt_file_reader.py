@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+from datetime import datetime, timedelta
 
 def csv_to_dataframe(file_path): # Function that takes a .csv file and converts it to a dataframe.
   with open(file_path, 'r', encoding='windows-1252') as file: # Opening and reading FMCSA text file.
@@ -110,22 +111,30 @@ def state_filter_to_csv(states, df, file_path, column_names): # Function that ta
             else:
               print("Out of range. Try again.")
 
-
-file_path_name = "FMCSA_CENSUS1_2024Jul.txt"
-data_frame = csv_to_dataframe(file_path_name)
-
-export_file_path_name = str(input("Name the export file: "))
-export_file_path_name = export_file_path_name + ".csv"
-
 while True:
+  file_path_name = "FMCSA_CENSUS1_2024Jul.txt"
+  data_frame = csv_to_dataframe(file_path_name)
+  import_zip_codes = "import zipcodes.csv"
+  export_file_path_name = "anaheim 75 mi radius.csv"
+
   try:
     userInput_method = int(input("What would you like to do?\n" + "Enter 1 to filter by Zip Code.\n" + "Enter 2 to filter by State/Province Abbreviation.\n"))
   except ValueError:
     print("Please enter a number.")
   else:
     if userInput_method == 1:
-      zip_codes = input("Enter your comma separated list of zip codes: ")
-      zip_codes_list = zip_codes.split(',')
+      # zip_codes = input("Enter your comma separated list of zip codes: ")
+
+      zip_codes_list = []
+      with open('import zipcodes.csv', 'r') as f:
+          csv_reader = csv.reader(f, delimiter = ',')
+          next(csv_reader)
+          zip_codes_list = [row[0] for row in csv_reader]
+
+      print(zip_codes_list)
+      
+      # zip_codes_list = zip_codes.split(',')
+
       convert_zip4(data_frame)
       zipcode_filter_to_csv(zip_codes_list, data_frame, export_file_path_name, data_frame.columns.values)
       break

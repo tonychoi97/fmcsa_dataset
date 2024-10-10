@@ -24,7 +24,7 @@ def carrier_api_call_option():
     count = 0
     search_dot_list = get_dot_list_from_csv()
     df1 = pd.DataFrame(search_dot_list, columns = ['DOT NUMBER'])
-    df2 = pd.read_csv("active fmcsa records.csv", usecols = ['DOT NUMBER'], header = 0)
+    df2 = pd.read_csv("active fmcsa records updated 9.27.2024.csv", usecols = ['DOT NUMBER'], header = 0)
     for i in list(df1['DOT NUMBER'].astype(str)):
         duplicate_checker = list(df2['DOT NUMBER'].astype(str)).count(i)
         if duplicate_checker > 0:
@@ -36,10 +36,11 @@ def carrier_api_call_option():
     
     print(f'Found {count} duplicates. Proceeding with API call...\n')
 
-    with open('active fmcsa records.csv', 'a', newline = '', encoding = 'utf-8') as f:
+    with open('active fmcsa records updated 9.27.2024.csv', 'a', newline = '', encoding = 'utf-8') as f:
         for i in search_dot_list:
             new_record = {
                 "RECORD RETRIEVAL DATE": None,
+                "RECORD EXISTS": None,
                 "DOT NUMBER": None,
                 "DBA NAME": None,
                 "LEGAL NAME": None,
@@ -76,6 +77,7 @@ def carrier_api_call_option():
 
                     new_record = {
                         "RECORD RETRIEVAL DATE": date.today(),
+                        "RECORD EXISTS": 'N',
                         "DOT NUMBER": i,
                         "DBA NAME": None,
                         "LEGAL NAME": None,
@@ -102,39 +104,39 @@ def carrier_api_call_option():
 
                     csv.writer(f).writerow(new_record.values())
 
-                elif data['content']['carrier']['dbaName'] == None:
-                    print("DOT Number:", i, "is inactive.\n")
+                # elif data['content']['carrier']['legalName'] == None :
+                #     print("DOT Number:", i, "is inactive.\n")
 
-                    new_record = {
-                        "RECORD RETRIEVAL DATE": date.today(),
-                        "DOT NUMBER": i,
-                        "DBA NAME": None,
-                        "LEGAL NAME": None,
-                        "ALLOWED TO OPERATE": 'N',
-                        "CARRIER OPERATION CODE": None,
-                        "CARRIER OPERATION DESCRIPTION": None,
-                        "CENSUS TYPE": None,
-                        "CENSUS TYPE DESCRIPTION": None,
-                        "CENSUS TYPE ID": None,
-                        "IS PASSENGER CARRIER?": None,
-                        "MCS150 OUTDATED?": None,
-                        "OOS DATE": None,
-                        "PHY STREET": None,
-                        "PHY CITY": None,
-                        "PHY STATE": None,
-                        "PHY ZIP": None,
-                        "PHY COUNTRY": None,
-                        "REVIEW DATE": None,
-                        "REVIEW TYPE": None,
-                        "STATUS CODE": None,
-                        "TOTAL DRIVERS": None,
-                        "TOTAL POWER UNITS": None
-                    }
+                #     new_record = {
+                #         "RECORD RETRIEVAL DATE": date.today(),
+                #         "DOT NUMBER": i,
+                #         "DBA NAME": None,
+                #         "LEGAL NAME": None,
+                #         "ALLOWED TO OPERATE": 'N',
+                #         "CARRIER OPERATION CODE": None,
+                #         "CARRIER OPERATION DESCRIPTION": None,
+                #         "CENSUS TYPE": None,
+                #         "CENSUS TYPE DESCRIPTION": None,
+                #         "CENSUS TYPE ID": None,
+                #         "IS PASSENGER CARRIER?": None,
+                #         "MCS150 OUTDATED?": None,
+                #         "OOS DATE": None,
+                #         "PHY STREET": None,
+                #         "PHY CITY": None,
+                #         "PHY STATE": None,
+                #         "PHY ZIP": None,
+                #         "PHY COUNTRY": None,
+                #         "REVIEW DATE": None,
+                #         "REVIEW TYPE": None,
+                #         "STATUS CODE": None,
+                #         "TOTAL DRIVERS": None,
+                #         "TOTAL POWER UNITS": None
+                #     }
 
-                    csv.writer(f).writerow(new_record.values())
+                #     csv.writer(f).writerow(new_record.values())
 
                 else:
-                    print("DOT Number:", i, "is", data['content']['carrier']['dbaName'], '\n')
+                    print("DOT Number:", i, "is", data['content']['carrier']['legalName'], '\n')
                     
                     if data['content']['carrier']['carrierOperation'] == None:
                         carrier_operation_code = None
@@ -154,6 +156,7 @@ def carrier_api_call_option():
 
                     new_record = {
                         "RECORD RETRIEVAL DATE": date.today(),
+                        "RECORD EXISTS": "Y",
                         "DOT NUMBER": data['content']['carrier']['dotNumber'],
                         "DBA NAME": data['content']['carrier']['dbaName'],
                         "LEGAL NAME": data['content']['carrier']['legalName'],
@@ -203,7 +206,7 @@ def api_call_key_test(base, web):
 
 def get_dot_list_from_csv():
     dot = []
-    with open('act expo 2025 target states.csv', 'r') as f:
+    with open('inactive dot check 9.27.2024.csv', 'r') as f:
         csv_reader = csv.reader(f, delimiter = ',')
         next(csv_reader)
         dot = [row[0] for row in csv_reader]
