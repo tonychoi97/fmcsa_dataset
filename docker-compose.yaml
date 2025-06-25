@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   pgdatabase:
     image: postgres:13
@@ -9,7 +7,6 @@ services:
       - POSTGRES_DB=fmcsa_db
     ports:
       - "5432:5432"
-
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -18,24 +15,8 @@ services:
     ports:
       - "8080:80"
 
-# services:
-#   pgdatabase:
-#     image: postgres:13
-#     environment:
-#       - POSTGRES_USER=root
-#       - POSTGRES_PASSWORD=root
-#       - POSTGRES_DB=fmcsa_db
-#     # volumes:
+
 #     #  - "./fmcsa_datasets:/var/lib/postgresql/data:rw"
-#     ports:
-#       - "5432:5432"
-#   pgadmin:
-#     image: dpage/pgadmin4
-#     environment:
-#       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-#       - PGADMIN_DEFAULT_PASSWORD=root
-#     ports:
-#       - "8080:80"
 # app:
 #   build:
 #     context: .
