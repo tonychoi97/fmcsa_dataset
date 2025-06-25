@@ -5,31 +5,16 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=fmcsa_db
+    volumes:
+      - "./fmcsa_records:/var/lib/postgresql/data:rw"
     ports:
       - "5432:5432"
   pgadmin:
     image: dpage/pgadmin4
+    volumes:
+      - "./data_pgadmin:/var/lib/pgadmin"
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - "8080:80"
-
-
-#     #  - "./fmcsa_datasets:/var/lib/postgresql/data:rw"
-# app:
-#   build:
-#     context: .
-#     dockerfile: Dockerfile
-#   depends_on: 
-#     - pg-database
-#   environment:
-#     - host=pg-database
-#     - port=5432
-#     - user=root
-#     - password=root
-#     - table_name=fmcsa_db
-#     - url="https://ai.fmcsa.dot.gov/SMS/files/FMCSA_CENSUS1_2025Jun.zip"
-#   volumes:
-#     - .:/app
-#   command: [ "python", "import_data.py" ]

@@ -22,19 +22,9 @@ docker run -it \
   fmcsa_test_image \
     --user=root \
     --password=root \
-    --host=pg-database \
+    --host=pgdatabase \
     --port=5432 \
     --db=fmcsa_db \
     --table_name=fmcsa_records \
     --url=${URL}
 ```
-
-docker run -it \
--e POSTGRES_USER="root" \
--e POSTGRES_PASSWORD="root" \
--e POSTGRES_DB="act_expo" \
--v c:/Users/Jaewo/git/fmcsa_dataset/fmcsa_datasets:/var/lib/postgresql/data \
--p 5432:5432 \
-postgres:13
-
-C:\Users\Jaewo\git\fmcsa_dataset\fmcsa_datasets
