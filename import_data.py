@@ -1,9 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from zipfile import ZipFile
 
 import os
 import argparse
+import zipfile
 
 import time
 
@@ -16,22 +16,32 @@ def main(params):
     table_name = params.table_name
     url = params.url
 
-    os.system(f'wget {url}')
-    
-    print('testing if this statement goes through')
+    print('Downloading zip file from url.')
+    os.system(f'wget {url} -O output.zip')
+    print('Downloading finished.')
 
-    os.system(f'unzip FMCSA_CENSUS1_2025Jun')
 
+    print('Extracting zip file.')
+    with zipfile.ZipFile('output.zip', 'r') as zip_ref:
+        zip_ref.extractall('/app')
+    print('Extraction finished.')
+
+    print('Creating engine for postgres.')
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
+    print('Engine is created.')
 
-    print('engine is created')
-
-    print('reading data into dataframe')
-    df_iter = pd.read_csv('FMCSA_CENSUS1_2025Jun.txt', sep=',', iterator=True, chunksize=100000)
+    print('Reading data into dataframe.')
+    print('1st check')
+    df_iter = pd.read_csv('FMCSA_CENSUS1_2025Jun.txt', iterator=True, chunksize=100000, encoding='cp1252')
     df = next(df_iter)
-    df.head(n=0).to_sql(name='act25_registrants', con=engine, if_exists='replace')
-    df.to_sql(name='act25_registrants', con=engine, if_exists='append')
 
+    print('2nd check')
+    df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+
+    print('3rd check')
+    df.to_sql(name=table_name, con=engine, if_exists='append')
+
+    print('4th check')
     while True:
         try:
             t_start = time()

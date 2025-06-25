@@ -16,3 +16,19 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - "8080:80"
+# app:
+#   build:
+#     context: .
+#     dockerfile: Dockerfile
+#   depends_on: 
+#     - pg-database
+#   environment:
+#     - host=pg-database
+#     - port=5432
+#     - user=root
+#     - password=root
+#     - table_name=fmcsa_db
+#     - url="https://ai.fmcsa.dot.gov/SMS/files/FMCSA_CENSUS1_2025Jun.zip"
+#   volumes:
+#     - .:/app
+#   command: [ "python", "import_data.py" ]
